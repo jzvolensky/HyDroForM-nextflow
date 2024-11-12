@@ -11,18 +11,15 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-
 if ! command_exists minikube; then
     echo "Minikube is not installed. Please install it before running this script."
     exit 1
 fi
 
-
 if ! command_exists kubectl; then
     echo "kubectl is not installed. Please install it before running this script."
     exit 1
 fi
-
 
 if [[ "$MINIKUBE_DRIVER" == "docker" ]] && ! command_exists docker; then
     echo "Docker is not installed. Please install it before running this script."
@@ -35,9 +32,9 @@ echo "Starting Minikube with Docker driver, $MINIKUBE_CPUS CPUs, $MINIKUBE_MEMOR
 # Check if GPU is requested and available
 if [[ "$ENABLE_GPU" == "true" ]]; then
     echo "Enabling GPU support in Minikube..."
-    minikube start --driver=$MINIKUBE_DRIVER --cpus=$MINIKUBE_CPUS --memory=$MINIKUBE_MEMORY --gpu
+    minikube start --driver="$MINIKUBE_DRIVER" --cpus="$MINIKUBE_CPUS" --memory="$MINIKUBE_MEMORY" --gpu
 else
-    minikube start --driver=$MINIKUBE_DRIVER --cpus=$MINIKUBE_CPUS --memory=$MINIKUBE_MEMORY
+    minikube start --driver="$MINIKUBE_DRIVER" --cpus="$MINIKUBE_CPUS" --memory="$MINIKUBE_MEMORY"
 fi
 
 # Check if Minikube started successfully
@@ -54,7 +51,7 @@ fi
 
 # Step 3: (Optional) Configure Docker environment to use Minikube's Docker daemon
 echo "Configuring Docker to use Minikube's Docker daemon..."
-eval $(minikube -p minikube docker-env)
+eval "$(minikube -p minikube docker-env)"
 
 # Step 4: Verify setup
 echo "Minikube setup completed successfully."
