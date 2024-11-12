@@ -22,6 +22,7 @@ This repository aims to translate our existing HyDroForM CWL workflows to Nextfl
       - [Install Minikube](#install-minikube)
       - [Install Nextflow](#install-nextflow)
       - [Setting up Minikube](#setting-up-minikube)
+      - [Automated Installation](#automated-installation)
 
 ## Experimental Architecture
 
@@ -169,3 +170,13 @@ source $HOME/.zshrc
 #### Setting up Minikube
 
 TODO: Add instructions on how to set up Minikube
+
+### Automated Installation
+
+You can use the provided script to automate the installation process:
+
+```zsh
+sudo ./scripts/install.sh
+```
+
+It basically runs all of the commands mentioned above in the correct order.

@@ -11,25 +11,25 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Step 1: Check if Minikube is installed
+
 if ! command_exists minikube; then
     echo "Minikube is not installed. Please install it before running this script."
     exit 1
 fi
 
-# Check if kubectl is installed
+
 if ! command_exists kubectl; then
     echo "kubectl is not installed. Please install it before running this script."
     exit 1
 fi
 
-# Check if Docker is installed if using Docker driver
+
 if [[ "$MINIKUBE_DRIVER" == "docker" ]] && ! command_exists docker; then
     echo "Docker is not installed. Please install it before running this script."
     exit 1
 fi
 
-# Step 2: Start Minikube with specified resources and GPU support if enabled
+# Start Minikube with specified resources and GPU support if enabled
 echo "Starting Minikube with Docker driver, $MINIKUBE_CPUS CPUs, $MINIKUBE_MEMORY MB memory..."
 
 # Check if GPU is requested and available
