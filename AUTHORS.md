@@ -2,7 +2,7 @@
 
 ## Maintainers
 
-Full Name \<email\>
+Juraj Zvolensky <juraj.zvolensky@eurac.edu>
 
 ## Contributors
 

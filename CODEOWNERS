@@ -4,7 +4,8 @@
 # Assign code owners that will automatically get asked to review Pull Requests
 # The last matching pattern takes the most precedence.
 
+* @jzvolensky
+
 # These owners will be the default owners for everything in the repo.
 # Unless a later match takes precedence, they will be requested for
 # review when someone opens a pull request.
-
