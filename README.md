@@ -1,10 +1,10 @@
 # HyDroForM Nextflow
 
-[![Nextflow](https://img.shields.io/badge/Nextflow-21.04.0-brightgreen)](https://www.nextflow.io/)
-[![Docker](https://img.shields.io/badge/Docker-20.10.5-brightgreen)](https://www.docker.com/)
-[![Minikube](https://img.shields.io/badge/Minikube-1.19.0-brightgreen)](https://minikube.sigs.k8s.io/docs/)
-[![Kubernetes](https://img.shields.io/badge/Kubernetes-1.21.0-brightgreen)](https://kubernetes.io/)
-[![Python](https://img.shields.io/badge/Python-3.12-brightgreen)](https://www.python.org/)
+[![Nextflow](https://img.shields.io/badge/Nextflow-24.10.0.5928-brightgreen)](https://www.nextflow.io/)
+[![Docker](https://img.shields.io/badge/Docker-27.3.1-brightgreen)](https://www.docker.com/)
+[![Minikube](https://img.shields.io/badge/Minikube-1.34.0-brightgreen)](https://minikube.sigs.k8s.io/docs/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes--brightgreen)](https://kubernetes.io/)
+[![Python](https://img.shields.io/badge/Python-3.10.12-brightgreen)](https://www.python.org/)
 [![Java](https://img.shields.io/badge/Java-17-brightgreen)](https://www.java.com/)
 
 This repository aims to translate our existing HyDroForM CWL workflows to Nextflow.
@@ -38,6 +38,15 @@ Our reference testing Virtual Machine:
 - 8 CPUs,
 - 32 GB RAM
 - Nvidia A100 GPU
+
+Without a GPU you can run this setup and simple workflows on Minikube with little resources.
+
+Tested on Digital Ocean Droplet with:
+
+- Ubuntu 22.04.5 LTS
+- 2 CPUs,
+- 4 GB RAM
+- No GPU
 
 ### Software Setup
 
@@ -180,3 +189,23 @@ sudo ./scripts/install.sh
 ```
 
 It basically runs all of the commands mentioned above in the correct order.
+
+Then you can use `setup_minikube.sh` to set up Minikube with the correct configuration.
+
+```zsh
+./scripts/setup_minikube.sh
+```
+
+#### Coupling Minikube cluster with Nextflow
+
+In the `nextflow.config` file make sure you set the namespace, serviceAccount and context based on your deployment.
+
+Enabling `fusion` removes the need for creating a PVC (Persistent Volume Claim)
+
+#### Running a sample workflow
+
+To run a sample workflow, you can use the following command:
+
+```zsh
+nextflow run /src/test-workflow.nf
+```

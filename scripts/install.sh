@@ -51,10 +51,10 @@ else
 fi
 
 # Install SDKMAN and Java
+sudo apt-get install -y unzip zip
 if ! command_exists sdk; then
   if ! command_exists unzip; then
     echo "unzip is required for SDKMAN installation. Installing unzip..."
-    sudo apt-get install -y unzip
   fi
   curl -s "https://get.sdkman.io" | bash
   source "$HOME/.sdkman/bin/sdkman-init.sh"

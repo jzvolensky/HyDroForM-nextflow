@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Set configuration values
-MINIKUBE_CPUS="${MINIKUBE_CPUS:-4}"          # Default CPU count
-MINIKUBE_MEMORY="${MINIKUBE_MEMORY:-16384}"    # Default memory in MB
+MINIKUBE_CPUS="${MINIKUBE_CPUS:-2}"          # Default CPU count
+MINIKUBE_MEMORY="${MINIKUBE_MEMORY:-2200}"    # Default memory in MB
 MINIKUBE_DRIVER="${MINIKUBE_DRIVER:-docker}"  # Default driver
-ENABLE_GPU="${ENABLE_GPU:-true}"             # Set to "true" to enable GPU
+ENABLE_GPU="${ENABLE_GPU:-false}"             # Set to "true" to enable GPU
 
 # Function to check if a command exists
 command_exists() {
@@ -34,7 +34,7 @@ if [[ "$ENABLE_GPU" == "true" ]]; then
     echo "Enabling GPU support in Minikube..."
     minikube start --driver="$MINIKUBE_DRIVER" --cpus="$MINIKUBE_CPUS" --memory="$MINIKUBE_MEMORY" --gpu
 else
-    minikube start --driver="$MINIKUBE_DRIVER" --cpus="$MINIKUBE_CPUS" --memory="$MINIKUBE_MEMORY"
+    minikube start --driver="$MINIKUBE_DRIVER" --cpus="$MINIKUBE_CPUS" --memory="$MINIKUBE_MEMORY" --force
 fi
 
 # Check if Minikube started successfully

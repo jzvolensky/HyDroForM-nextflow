@@ -1,19 +1,16 @@
-process exampleProcess {
-    container = 'your-docker-image' // Replace with your Docker image
+#!/usr/bin/env nextflow
+
+process sayHello {
+
+    output:
+        stdout
+
     script:
     """
-    echo "Running example process"
+    echo 'Hello World!'
     """
 }
 
-// ...existing code...
-
-process anotherProcess {
-    container = 'another-docker-image' // Replace with another Docker image if needed
-    script:
-    """
-    echo "Running another process"
-    """
+workflow {
+    sayHello()
 }
-
-// ...existing code...
