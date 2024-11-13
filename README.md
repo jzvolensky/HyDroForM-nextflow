@@ -3,7 +3,7 @@
 [![Nextflow](https://img.shields.io/badge/Nextflow-24.10.0.5928-brightgreen)](https://www.nextflow.io/)
 [![Docker](https://img.shields.io/badge/Docker-27.3.1-brightgreen)](https://www.docker.com/)
 [![Minikube](https://img.shields.io/badge/Minikube-1.34.0-brightgreen)](https://minikube.sigs.k8s.io/docs/)
-[![Kubernetes](https://img.shields.io/badge/Kubernetes--brightgreen)](https://kubernetes.io/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-1.31-brightgreen)](https://kubernetes.io/)
 [![Python](https://img.shields.io/badge/Python-3.10.12-brightgreen)](https://www.python.org/)
 [![Java](https://img.shields.io/badge/Java-17-brightgreen)](https://www.java.com/)
 
