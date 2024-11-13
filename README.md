@@ -27,7 +27,6 @@ This repository aims to translate our existing HyDroForM CWL workflows to Nextfl
     - [Running a sample workflow](#running-a-sample-workflow)
     - [Running a workflow in Minikube (TODO)](#running-a-workflow-in-minikube)
 
-
 ## Experimental Architecture
 
 TODO: Add a diagram of the architecture
