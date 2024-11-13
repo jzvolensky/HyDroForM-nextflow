@@ -31,7 +31,7 @@ Current version: V0.5
 
 Basic initial deployment of the Nextflow environment with Minikube and Minio.
 
-[![Experimental Architecture](./images/architecture_v0.5.png)
+![Experimental Architecture](./images/architecture_v0.5.png)
 
 ### Components
 
