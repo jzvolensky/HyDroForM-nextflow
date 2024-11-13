@@ -1,0 +1,4 @@
+# Nextflow process stuff
+.nextflow.log*
+.nextflow/
+work/

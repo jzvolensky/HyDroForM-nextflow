@@ -13,7 +13,7 @@ This repository aims to translate our existing HyDroForM CWL workflows to Nextfl
 
 - [HyDroForM Nextflow](#hydroform-nextflow)
   - [Table of Contents](#table-of-contents)
-  - [Experimental Architecture (TODO)](#experimental-architecture)
+  - [Experimental Architecture](#experimental-architecture)
   - [Installation of the Environment](#installation-of-the-environment)
     - [Hardware Setup](#hardware-setup)
     - [Software Setup](#software-setup)
@@ -21,21 +21,30 @@ This repository aims to translate our existing HyDroForM CWL workflows to Nextfl
       - [Nvidia Container Toolkit](#nvidia-container-toolkit)
       - [Install Minikube](#install-minikube)
       - [Install Nextflow](#install-nextflow)
-      - [Setting up Minikube (TODO)](#setting-up-minikube)
-      - [Automated Installation](#automated-installation)
+    - [Automated Installation](#automated-installation)
       - [Coupling Minikube cluster with Nextflow](#coupling-minikube-cluster-with-nextflow)
-    - [Running a sample workflow](#running-a-sample-workflow)
-    - [Running a workflow in Minikube (TODO)](#running-a-workflow-in-minikube)
+      - [Running a sample workflow](#running-a-sample-workflow)
 
 ## Experimental Architecture
 
-TODO: Add a diagram of the architecture
+Current version: V0.5
+
+Basic initial deployment of the Nextflow environment with Minikube and Minio.
+
+[![Experimental Architecture](./images/architecture_v0.5.png)
+
+### Components
+
+- **Minikube**: A single-node Kubernetes cluster that can be run locally.
+- **Minio**: An object storage server compatible with Amazon S3.
+- **Nextflow**: A workflow manager that enables the development of complex data pipelines.
+- **Docker**: A platform for developing, shipping, and running applications.
 
 ## Installation of the Environment
 
 ### Hardware Setup
 
-Our reference testing Virtual Machine:
+Our reference testing Virtual Machines:
 
 - Ubuntu 22.04.5 LTS
 - 8 CPUs,
@@ -43,6 +52,7 @@ Our reference testing Virtual Machine:
 - Nvidia A100 GPU
 
 Without a GPU you can run this setup and simple workflows on Minikube with little resources.
+However, the automated install supports Nvidia GPUs and the Nvidia Container Toolkit.
 
 Tested on Digital Ocean Droplet with:
 
@@ -54,6 +64,8 @@ Tested on Digital Ocean Droplet with:
 ### Software Setup
 
 This section describes step by step how to install all of the required software on a blank VM.
+
+To deploy a Minikube cluster with NextFlow and Minio take a look at [Automated Installation](#automated-installation)
 
 #### Install Docker Engine
 
@@ -181,10 +193,6 @@ echo 'export PATH=$HOME/.local/bin:$PATH' >> $HOME/.zshrc
 source $HOME/.zshrc
 ```
 
-#### Setting up Minikube
-
-TODO: Add instructions on how to set up Minikube
-
 ### Automated Installation
 
 You can use the provided script to automate the installation process:
@@ -193,29 +201,126 @@ You can use the provided script to automate the installation process:
 sudo ./scripts/install.sh
 ```
 
-It basically runs all of the commands mentioned above in the correct order.
+It basically runs all of the commands mentioned above in the correct order and setup.
 
-Then you can use `setup_minikube.sh` to set up Minikube with the correct configuration.
+Then you can use `setup_minikube.sh` to set up a Minikube cluster with the correct configuration.
 
 ```zsh
 ./scripts/setup_minikube.sh
 ```
 
+To utilize the `Fusion` file system we will deploy `Minio` to our cluster for testing purposes.
+Nextflow support CEPH, AWS, Azure, Google Cloud... so you can plug in whatever file system you are using.
+
+This will create a Minio instance in your cluster.
+**NOTE**: Remember to customize the `setup_minio.yaml` file to your needs, especially the access keys
+and the node port.
+
+```zsh
+kubectl apply -f ./scripts/setup_minio.yaml
+```
+
+Check if the service is running:
+
+```zsh
+kubectl get pods -n minio
+```
+
+The `Minio Client` is also useful and can be installed with:
+
+```zsh
+curl -O https://dl.min.io/client/mc/release/linux-amd64/mc
+chmod +x mc
+sudo mv mc /usr/local/bin/
+```
+
+To make our life easier we can alias our minio address:
+
+```zsh
+mc alias set myminio http://<MINIKUBE_IP>:30000 <ACCESS_KEY> <SECRET_KEY>
+```
+
+Now you can use the `mc` command to interact with your Minio instance.
+
+We can create a sample bucket for our workflows:
+
+```zsh
+mc mb myminio/nextflow-bucket
+```
+
+To check if the bucket was created:
+
+```zsh
+mc ls myminio
+```
+
 #### Coupling Minikube cluster with Nextflow
 
-In the `nextflow.config` file make sure you set the namespace, serviceAccount and context based on your deployment.
+Since we are using the `Fusion` file system we need to set up a few things in the `nextflow.config` file.
 
-Enabling `fusion` removes the need for creating a PVC (Persistent Volume Claim)
+A sample is provided in the root but basically you need to set the following:
+
+```zsh
+fusion {
+    enabled = true # enable fusion
+    exportStorageCredentials = true # export the credentials to the environment
+}
+```
+
+Then an `aws` section is required. It may look something like this:
+
+```zsh
+aws {
+  accessKey = '' // Minio access key
+  secretKey = '' // Minio secret key
+  profile = '~/.aws/credentials' // Minio profile if aws cli is installed
+  client {
+     s3PathStyleAccess = true // Allows you to use the S3:// endpoint format
+     endpoint = "http://XXX.XXX.XX.X:30000/" //minikube ip + minio service port
+     protocol = 'http'
+  }
+}
+```
 
 #### Running a sample workflow
 
-To run a sample workflow locally, you can use the following command:
+There are two ways to run the workflow using `nextflow`
+
+##### Running the workflow locally
+
+If you `cd` to the workflow directory you leave out the `nextflow.config` which means all our cluster setup is ignored.
+This allows you to run the workflow locally.
+
+To run a hello world like workflow:
 
 ```zsh
-cd src
+cd src/hello_world/
 nextflow run test-workflow.nf
 ```
 
-#### Running a workflow in Minikube
+This executes the command locally and returns the output files in the `work` directory.
 
-TODO
+##### Running the workflow on a cluster
+
+To run the workflow on a cluster you need to specify the `nextflow.config` file.
+This means you either run the `nextflow` command from the root directory or specify the path to the `nextflow.config` file.
+
+From root:
+
+```zsh
+nextflow run ./src/hello_world/test-workflow.nf -work-dir s3://nextflow-bucket/scratch
+```
+
+From anywhere else:
+  
+```zsh
+nextflow run <path_to_workflow.nf> -work-dir s3://nextflow-bucket/scratch -c <path_to_nextflow.config>
+```
+
+### To do
+
+- [ ] Deploy the infrastructure to our bigger VM with a GPU
+- [ ] Explore Nextflow integration with GPUs
+- [ ] Prepare sample HyDroForM workflows CPU and GPU
+- [ ] Test the workflows on the Minikube cluster
+- [ ] Add logging and monitoring
