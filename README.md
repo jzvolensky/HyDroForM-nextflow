@@ -13,7 +13,7 @@ This repository aims to translate our existing HyDroForM CWL workflows to Nextfl
 
 - [HyDroForM Nextflow](#hydroform-nextflow)
   - [Table of Contents](#table-of-contents)
-  - [Experimental Architecture](#experimental-architecture)
+  - [Experimental Architecture (TODO)](#experimental-architecture)
   - [Installation of the Environment](#installation-of-the-environment)
     - [Hardware Setup](#hardware-setup)
     - [Software Setup](#software-setup)
@@ -21,8 +21,12 @@ This repository aims to translate our existing HyDroForM CWL workflows to Nextfl
       - [Nvidia Container Toolkit](#nvidia-container-toolkit)
       - [Install Minikube](#install-minikube)
       - [Install Nextflow](#install-nextflow)
-      - [Setting up Minikube](#setting-up-minikube)
+      - [Setting up Minikube (TODO)](#setting-up-minikube)
       - [Automated Installation](#automated-installation)
+      - [Coupling Minikube cluster with Nextflow](#coupling-minikube-cluster-with-nextflow)
+    - [Running a sample workflow](#running-a-sample-workflow)
+    - [Running a workflow in Minikube (TODO)](#running-a-workflow-in-minikube)
+
 
 ## Experimental Architecture
 
@@ -70,9 +74,11 @@ echo \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
+
+ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-Installing Docker Engine:
+Or using an automated install of Docker Engine:
 
 ```zsh
 curl -fsSL https://get.docker.com | sh
@@ -204,8 +210,13 @@ Enabling `fusion` removes the need for creating a PVC (Persistent Volume Claim)
 
 #### Running a sample workflow
 
-To run a sample workflow, you can use the following command:
+To run a sample workflow locally, you can use the following command:
 
 ```zsh
-nextflow run /src/test-workflow.nf
+cd src
+nextflow run test-workflow.nf
 ```
+
+#### Running a workflow in Minikube
+
+TODO
